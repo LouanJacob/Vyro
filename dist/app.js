@@ -343,18 +343,42 @@ function setupQuoteForm() {
   };
 
   async function submitQuote(payload) {
-    if (!isSafePublicUrl(config.formEndpoint)) {
-      const error = new Error("L'envoi n'est pas configuré. Votre demande n'a pas été transmise.");
-      error.code = "FORM_NOT_CONFIGURED";
-      throw error;
+    if (!config.formEndpoint) {
+      const recipient = String(config.email || "").trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient)) {
+        const error = new Error("L’adresse e-mail de réception n’est pas configurée.");
+        error.code = "FORM_NOT_CONFIGURED";
+        throw error;
+      }
+      const subject = "Demande de devis VYRO — " + payload.business;
+      const body = [
+        "Bonjour Louan Jacob,",
+        "",
+        "Voici une demande de devis envoyée depuis le site VYRO.",
+        "",
+        "Entreprise : " + payload.business,
+        "Nom : " + payload.name,
+        "Secteur : " + payload.sector,
+        "Besoins : " + payload.needs.join(", "),
+        "Projet : " + payload.details,
+        "E-mail de réponse : " + payload.email,
+        "Téléphone : " + (payload.phone || "Non renseigné"),
+        "Site actuel : " + (payload.website || "Non renseigné")
+      ].join("\r\n");
+      const mailto = "mailto:" + recipient
+        + "?subject=" + encodeURIComponent(subject)
+        + "&body=" + encodeURIComponent(body);
+      window.location.assign(mailto);
+      return { channel: "mailto" };
     }
+    if (!isSafePublicUrl(config.formEndpoint)) throw new Error("L’adresse du service d’envoi doit être une URL HTTPS valide.");
     const response = await fetch(config.formEndpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Accept": "application/json" },
       body: JSON.stringify(payload)
     });
     if (!response.ok) throw new Error("Le service de réception a rencontré une erreur. Votre demande n'a pas été transmise. Réessayez ou contactez-nous directement.");
-    return response;
+    return { channel: "endpoint", response };
   }
 
   next.addEventListener("click", () => {
@@ -401,7 +425,12 @@ function setupQuoteForm() {
     submit.setAttribute("aria-busy", "true");
     clearStatus();
     try {
-      await submitQuote(collectData());
+      const result = await submitQuote(collectData());
+      if (result.channel === "mailto") {
+        showStatus("Votre messagerie s’ouvre avec la demande préremplie. Vérifiez le message puis appuyez sur « Envoyer » pour le transmettre.", "success");
+        status.focus();
+        return;
+      }
       form.hidden = true;
       success.hidden = false;
       success.focus();

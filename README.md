@@ -10,17 +10,17 @@ Le site ne demande ni compilation ni installation de dépendances. Servez le dos
 
 ## Avant la mise en ligne
 
-1. Modifiez `config.js` : nom définitif, URL du site, coordonnées, zone, réseaux sociaux, responsable et URL de réception du formulaire.
+1. Modifiez `config.js` si les coordonnées, le nom du responsable ou les réseaux sociaux changent.
 2. Remplacez `example.com` par le domaine officiel dans `robots.txt` et `sitemap.xml`.
 3. Complétez les informations de l'entreprise et de l'hébergeur dans `mentions-legales.html`.
 4. Vérifiez la politique de confidentialité dans `confidentialite.html` après avoir choisi l'hébergement des demandes et leur durée de conservation.
 5. Remplacez les illustrations de concepts par de vrais projets uniquement lorsque vous disposez des visuels et autorisations nécessaires.
 
-Les coordonnées visibles restent clairement marquées tant que les valeurs de configuration sont vides. Les liens de contact deviennent des liens `mailto:` et `tel:` seulement lorsqu'une adresse et un numéro réels sont définis.
+Les coordonnées visibles et les liens de contact utilisent les valeurs renseignées dans `config.js`.
 
 ## Formulaire
 
-Le parcours en cinq étapes valide les champs, affiche les erreurs et permet de relire le récapitulatif. Sans `formEndpoint` HTTPS dans `config.js`, le bouton de fin signale que la demande n'a pas été envoyée. Aucune confirmation de réception n'est affichée sans réponse positive du service.
+Le parcours en cinq étapes valide les champs, affiche les erreurs et permet de relire le récapitulatif. Sans `formEndpoint`, le bouton de fin ouvre le logiciel de messagerie de l’utilisateur avec une demande préremplie adressée à l’agence. L’utilisateur doit confirmer l’envoi dans ce logiciel. Le site n’affiche pas cette étape comme un envoi automatique.
 
 Pour connecter un backend, configurez `formEndpoint` avec l'URL HTTPS du service choisi. Celui-ci doit accepter une requête `POST` avec `Content-Type: application/json`, autoriser l'origine du site et répondre avec un statut HTTP 2xx après réception effective. Le serveur doit refaire sa propre validation et définir ses protections contre les abus. Le corps transmis contient `business`, `name`, `sector`, `needs`, `details`, `email`, `phone`, `website` et `consent`.
 
