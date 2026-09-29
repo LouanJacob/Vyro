@@ -5,7 +5,7 @@
  */
 window.VYRO_CONFIG = {
   agencyName: "VYRO",
-  siteUrl: "https://vyro-studio.rare-ash-3158.chatgpt.site",
+  siteUrl: "https://vyro-studio.loulouajacob.chatgpt.site",
   email: "",
   phone: "",
   city: "",

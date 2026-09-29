@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://vyro-studio.rare-ash-3158.chatgpt.site/sitemap.xml
+Sitemap: https://vyro-studio.loulouajacob.chatgpt.site/sitemap.xml
