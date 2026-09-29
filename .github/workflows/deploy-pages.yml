@@ -26,21 +26,13 @@ jobs:
       - name: Check out source
         uses: actions/checkout@v6
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: 24
-
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-
-      - name: Set the GitHub Pages URL
-        run: node scripts/prepare-github-pages.mjs
 
       - name: Upload site files
         uses: actions/upload-pages-artifact@v4
         with:
-          path: dist
+          path: './dist'
 
       - name: Deploy site
         id: deployment
