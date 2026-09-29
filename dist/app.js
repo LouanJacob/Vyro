@@ -85,7 +85,11 @@ function applySeoDetails() {
   if (!isSafePublicUrl(config.siteUrl)) return;
   const siteUrl = new URL(config.siteUrl);
   if (!siteUrl.pathname.endsWith("/")) siteUrl.pathname += "/";
-  const canonicalUrl = new URL(window.location.pathname, siteUrl.origin);
+  const currentPath = window.location.pathname;
+  const relativePath = currentPath.startsWith(siteUrl.pathname)
+    ? currentPath.slice(siteUrl.pathname.length)
+    : currentPath.replace(/^\/+/, "");
+  const canonicalUrl = new URL(relativePath === "index.html" ? "" : relativePath, siteUrl);
   const canonical = document.createElement("link");
   canonical.rel = "canonical";
   canonical.href = canonicalUrl.href;
@@ -98,8 +102,8 @@ function applySeoDetails() {
   if (!isHomePage) return;
   const ogImage = document.querySelector('meta[property="og:image"]');
   const twitterImage = document.querySelector('meta[name="twitter:image"]');
-  if (ogImage) ogImage.content = new URL("/og-vyro.svg", siteUrl.origin).href;
-  if (twitterImage) twitterImage.content = new URL("/og-vyro.svg", siteUrl.origin).href;
+  if (ogImage) ogImage.content = new URL("og-vyro.svg", siteUrl).href;
+  if (twitterImage) twitterImage.content = new URL("og-vyro.svg", siteUrl).href;
 
   const schema = {
     "@context": "https://schema.org",
